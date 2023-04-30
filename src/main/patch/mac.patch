@@ -1,0 +1,59 @@
+diff --git a/Makefile b/Makefile
+index 3a8db4c..23e234f 100644
+--- a/Makefile
++++ b/Makefile
+@@ -7,15 +7,17 @@
+ # Enable x265 for the encoder
+ USE_X265=y
+ # Enable the JCTVC code (best quality but slow) for the encoder
+-#USE_JCTVC=y
++USE_JCTVC=y
+ # Compile bpgview (SDL and SDL_image libraries needed)
+-USE_BPGVIEW=y
++USE_DYLIB=y
++# Enable to build dynamic library
++#USE_BPGVIEW=y
+ # Enable it to use bit depths > 12 (need more tests to validate encoder)
+ #USE_JCTVC_HIGH_BIT_DEPTH=y
+ # Enable the cross compilation for Windows
+ #CONFIG_WIN32=y
+ # Enable for compilation on MacOS X
+-#CONFIG_APPLE=y
++CONFIG_APPLE=y
+ # Installation prefix
+ prefix=/usr/local
+ 
+@@ -67,6 +69,9 @@ PROGS=bpgdec$(EXE) bpgenc$(EXE)
+ ifdef USE_BPGVIEW
+ PROGS+=bpgview$(EXE)
+ endif
++ifdef USE_DYLIB
++PROGS+=libbpg.dylib
++endif
+ ifdef USE_EMCC
+ PROGS+=bpgdec.js bpgdec8.js bpgdec8a.js
+ endif
+@@ -187,6 +192,9 @@ endif #!CONFIG_WIN32
+ 
+ bpgenc.o: CFLAGS+=-Wno-unused-but-set-variable
+ 
++libbpg.dylib: $(LIBBPG_OBJS) 
++	$(CC) -dynamiclib -arch x86_64 $(LDFLAGS) -o $@ $^ $(BPGDEC_LIBS)
++
+ libbpg.a: $(LIBBPG_OBJS) 
+ 	$(AR) rcs $@ $^
+ 
+diff --git a/bpgdec.c b/bpgdec.c
+index 2efd7a9..d9cace5 100644
+--- a/bpgdec.c
++++ b/bpgdec.c
+@@ -27,6 +27,9 @@
+ #include <math.h>
+ #include <getopt.h>
+ #include <inttypes.h>
++#ifdef __APPLE__
++#include <string.h>
++#endif
+ 
+ /* define it to include PNG output */
+ #define USE_PNG

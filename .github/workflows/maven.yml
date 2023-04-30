@@ -1,0 +1,38 @@
+name: Java CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Check w/o SNAPSHOT when "bump version"
+      if: ${{ contains(github.event.head_commit.message, 'bump version') }}
+      run: grep "<version>" pom.xml | head -1 | grep -v SNAPSHOT
+
+    - name: Set up JDK 8
+      uses: actions/setup-java@v3
+      with:
+        java-version: '8'
+        distribution: 'temurin'
+        cache: maven
+
+#        git clone https://github.com/mirrorer/libbpg /tmp/libbpg
+#        cd /tmp/libbpg
+#        git fetch --depth 1 origin 0e2aadb
+#        git checkout 0e2aadb
+#        patch -p 0 < /home/runner/work/vavi-image-bpg/vavi-image-bpg/src/main/pacth/mac.patch
+#        make
+
+    - name: Build with Maven
+      run: |
+        mvn -B package --file pom.xml
