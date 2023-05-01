@@ -6,9 +6,33 @@
 
 # vavi-image-bpg
 
+BPG (Better Portable Graphics) decoder over libbpg via JNA.
+
 ## Install
 
- * [maven](https://jitpack.io/#umjammer/vavi-image-bpg)
+### maven
+
+ * https://jitpack.io/#umjammer/vavi-image-bpg
+
+### dynamic library
+
+libbpg
+
+```shell
+$ git clone https://github.com/mirrorer/libbpg
+$ cd libbpg
+$ git fetch --depth 1 origin 0e2aadb
+$ git checkout 0e2aadb
+$ patch -p 0 < .../vavi-image-bpg/src/main/pacth/mac.patch
+$ make
+$ cp libbpg.dylib /usr/local/lib
+```
+
+java system property
+
+```
+ -Djna.library.path=/usr/local/lib
+```
 
 ## Usage
 
