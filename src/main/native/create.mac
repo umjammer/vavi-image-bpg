@@ -1,5 +1,5 @@
 brew install jpeg libpng x265
-HOMEBREW_PREFIX=$(brew config | grep HOMEBREW_PREFIX | awk '{print $2}')
+HOMEBREW_HOME=$(brew config | grep HOMEBREW_PREFIX | awk '{print $2}')
 rm -rf tmp/libbpg
 mkdir -p tmp
 cd tmp
