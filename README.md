@@ -1,8 +1,7 @@
-
 [![Release](https://jitpack.io/v/umjammer/vavi-image-bpg.svg)](https://jitpack.io/#umjammer/vavi-image-bpg)
 [![Java CI](https://github.com/umjammer/vavi-image-bpg/actions/workflows/maven.yml/badge.svg)](https://github.com/umjammer/vavi-image-bpg/actions/workflows/maven.yml)
-[![CodeQL](https://github.com/umjammer/vavi-image-bpg/actions/workflows/codeql.yml/badge.svg)](https://github.com/umjammer/vavi-image-bpg/actions/workflows/codeql-analysis.yml)
-![Java](https://img.shields.io/badge/Java-8-b07219)
+[![CodeQL](https://github.com/umjammer/vavi-image-bpg/actions/workflows/codeql.yml/badge.svg)](https://github.com/umjammer/vavi-image-bpg/actions/workflows/codeql.yml)
+![Java](https://img.shields.io/badge/Java-17-b07219)
 
 # vavi-image-bpg
 
@@ -23,7 +22,7 @@ $ git clone https://github.com/mirrorer/libbpg
 $ cd libbpg
 $ git fetch --depth 1 origin 0e2aadb
 $ git checkout 0e2aadb
-$ patch -p 0 < .../vavi-image-bpg/src/main/pacth/mac.patch
+$ patch -p 0 < .../vavi-image-bpg/src/main/patch/mac.patch
 $ make
 $ cp libbpg.dylib /usr/local/lib
 ```

@@ -5,7 +5,7 @@
 
   <groupId>vavi</groupId>
   <artifactId>vavi-image-bpg</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
 
   <properties>
     <jnaerator.version>0.12</jnaerator.version>
@@ -17,7 +17,6 @@
       <activation>
         <os>
           <family>mac</family>
-          <arch>x86_64</arch>
         </os>
         <property>
           <name>env.JITPACK</name>
@@ -27,22 +26,22 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-install-plugin</artifactId>
-            <version>3.0.0-M1</version>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.2.0</version>
             <executions>
               <execution>
                 <id>install-library</id>
-                <phase>install</phase>
+                <phase>test-compile</phase>
                 <goals>
-                  <goal>install-file</goal>
+                  <goal>exec</goal>
                 </goals>
                 <configuration>
-                  <groupId>${project.groupId}</groupId>
-                  <artifactId>${project.artifactId}</artifactId>
-                  <version>${project.version}</version>
-                  <packaging>dylib</packaging>
-                  <file>${project.build.directory}/libjxlwrapper-${project.version}.dylib</file>
+                  <skip>false</skip>
+                  <executable>src/main/native/create.mac</executable>
+                  <environmentVariables>
+                    <ARCH>${os.arch}</ARCH>
+                  </environmentVariables>
                 </configuration>
               </execution>
             </executions>
@@ -81,17 +80,15 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.10.1</version>
+        <version>3.11.0</version>
         <configuration>
-          <source>8</source>
-          <target>8</target>
-          <encoding>UTF-8</encoding>
+          <release>17</release>
         </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M7</version>
+        <version>3.2.2</version>
         <configuration>
           <argLine>
             -Djava.util.logging.config.file=${project.build.testOutputDirectory}/logging.properties
@@ -114,7 +111,7 @@
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>5.9.2</version>
+        <version>5.10.1</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -125,7 +122,7 @@
     <dependency>
       <groupId>com.github.umjammer</groupId>
       <artifactId>vavi-commons</artifactId>
-      <version>1.1.9</version>
+      <version>1.1.10</version>
     </dependency>
     <dependency>
       <groupId>com.github.umjammer</groupId>
@@ -135,7 +132,7 @@
     <dependency>
       <groupId>net.java.dev.jna</groupId>
       <artifactId>jna</artifactId>
-      <version>5.12.1</version>
+      <version>5.14.0</version>
     </dependency>
 
     <dependency>

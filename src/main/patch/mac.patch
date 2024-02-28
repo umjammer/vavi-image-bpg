@@ -1,5 +1,5 @@
 diff --git a/Makefile b/Makefile
-index 3a8db4c..23e234f 100644
+index 3a8db4c..8506dde 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -7,15 +7,17 @@
@@ -23,7 +23,32 @@ index 3a8db4c..23e234f 100644
  # Installation prefix
  prefix=/usr/local
  
-@@ -67,6 +69,9 @@ PROGS=bpgdec$(EXE) bpgenc$(EXE)
+@@ -31,6 +33,14 @@ CROSS_PREFIX:=
+ EXE:=
+ endif
+ 
++ifdef CONFIG_APPLE
++ifeq ($(ARCH),aarch64)
++LDARCH:=arm64
++else
++LDARCH:=x86_64
++endif
++endif
++
+ CC=$(CROSS_PREFIX)gcc
+ CXX=$(CROSS_PREFIX)g++
+ AR=$(CROSS_PREFIX)ar
+@@ -45,6 +55,9 @@ CFLAGS+=-DCONFIG_BPG_VERSION=\"$(shell cat VERSION)\"
+ ifdef USE_JCTVC_HIGH_BIT_DEPTH
+ CFLAGS+=-DRExt__HIGH_BIT_DEPTH_SUPPORT
+ endif
++ifdef CONFIG_APPLE
++CFLAGS+=-I${HOMEBREW_HOME}/include
++endif
+ 
+ # Emscriptem config
+ EMLDFLAGS:=-s "EXPORTED_FUNCTIONS=['_bpg_decoder_open','_bpg_decoder_decode','_bpg_decoder_get_info','_bpg_decoder_start','_bpg_decoder_get_frame_duration','_bpg_decoder_get_line','_bpg_decoder_close','_malloc','_free']"
+@@ -67,6 +80,9 @@ PROGS=bpgdec$(EXE) bpgenc$(EXE)
  ifdef USE_BPGVIEW
  PROGS+=bpgview$(EXE)
  endif
@@ -33,12 +58,56 @@ index 3a8db4c..23e234f 100644
  ifdef USE_EMCC
  PROGS+=bpgdec.js bpgdec8.js bpgdec8a.js
  endif
-@@ -187,6 +192,9 @@ endif #!CONFIG_WIN32
+@@ -99,7 +115,11 @@ BPGENC_LIBS:=
+ 
+ ifdef USE_X265
+ 
++ifdef CONFIG_APPLE
++X265_LIBS:=-lx265
++else
+ X265_LIBS:=./x265.out/8bit/libx265.a ./x265.out/10bit/libx265.a ./x265.out/12bit/libx265.a
++endif
+ BPGENC_OBJS+=x265_glue.o $(X265_LIBS)
+ 
+ bpgenc.o: CFLAGS+=-DUSE_X265
+@@ -112,6 +132,10 @@ else
+ CMAKE_OPTS:=
+ endif
+ 
++ifdef CONFIG_APPLE
++x265_clean:
++$(X265_LIBS):
++else
+ x265.out:
+ 	mkdir -p x265.out/8bit x265.out/10bit x265.out/12bit
+ 	cd x265.out/12bit && cmake ../../x265/source $(CMAKE_OPTS) -DHIGH_BIT_DEPTH=ON -DEXPORT_C_API=OFF -DENABLE_SHARED=OFF -DENABLE_CLI=OFF -DMAIN12=ON
+@@ -128,6 +152,7 @@ x265_clean:
+ 	rm -rf x265.out
+ 
+ $(X265_LIBS): x265_make
++endif
+ 
+ else
+ 
+@@ -180,13 +205,22 @@ endif # !CONFIG_APPLE
+ LIBS+=-lm -lpthread
+ 
+ BPGDEC_LIBS:=-lpng $(LIBS)
++ifdef CONFIG_APPLE
++BPGDEC_LIBS+=-L${HOMEBREW_HOME}/lib
++endif
+ BPGENC_LIBS+=-lpng -ljpeg $(LIBS)
++ifdef CONFIG_APPLE
++BPGENC_LIBS+=-L${HOMEBREW_HOME}/lib
++endif
+ BPGVIEW_LIBS:=-lSDL_image -lSDL $(LIBS)
+ 
+ endif #!CONFIG_WIN32
  
  bpgenc.o: CFLAGS+=-Wno-unused-but-set-variable
  
 +libbpg.dylib: $(LIBBPG_OBJS) 
-+	$(CC) -dynamiclib -arch x86_64 $(LDFLAGS) -o $@ $^ $(BPGDEC_LIBS)
++	$(CC) -dynamiclib -arch $(LDARCH) $(LDFLAGS) -o $@ $^ $(BPGDEC_LIBS)
 +
  libbpg.a: $(LIBBPG_OBJS) 
  	$(AR) rcs $@ $^

@@ -9,29 +9,22 @@ on:
 jobs:
   build:
 
-    runs-on: macos-latest
+    runs-on: macos-14
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Check w/o SNAPSHOT when "bump version"
       if: ${{ contains(github.event.head_commit.message, 'bump version') }}
       run: grep "<version>" pom.xml | head -1 | grep -v SNAPSHOT
 
-    - name: Set up JDK 8
-      uses: actions/setup-java@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
       with:
-        java-version: '8'
+        java-version: '17'
         distribution: 'temurin'
         cache: maven
-
-#        git clone https://github.com/mirrorer/libbpg /tmp/libbpg
-#        cd /tmp/libbpg
-#        git fetch --depth 1 origin 0e2aadb
-#        git checkout 0e2aadb
-#        patch -p 0 < /home/runner/work/vavi-image-bpg/vavi-image-bpg/src/main/pacth/mac.patch
-#        make
 
     - name: Build with Maven
       run: |

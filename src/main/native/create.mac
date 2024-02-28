@@ -1,0 +1,13 @@
+brew install jpeg libpng x265
+export HOMEBREW_HOME=$(brew config | grep HOMEBREW_PREFIX | awk '{print $2}')
+rm -rf tmp/libbpg
+mkdir -p tmp
+cd tmp
+git clone https://github.com/mirrorer/libbpg
+cd libbpg
+mv VERSION VERSION.off
+git fetch --depth 1 origin 0e2aadb
+git checkout 0e2aadb
+patch -p 1 < ../../src/main/patch/mac.patch
+make
+cp libbpg.dylib ../../target/test-classes
