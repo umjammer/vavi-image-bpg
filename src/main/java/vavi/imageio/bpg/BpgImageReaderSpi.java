@@ -26,8 +26,8 @@ import vavi.util.Debug;
  */
 public class BpgImageReaderSpi extends ImageReaderSpi {
 
-    private static final String Version = "0.0.1";
     private static final String VendorName = "https://github.com/umjammer/vavi-image-bpg";
+    private static final String Version = "0.0.2";
     private static final String ReaderClassName =
         "vavi.imageio.bpg.BpgImageReader";
     private static final String[] Names = {
