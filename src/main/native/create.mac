@@ -5,7 +5,7 @@ mkdir -p tmp
 cd tmp
 git clone https://github.com/mirrorer/libbpg
 cd libbpg
-cp VERSION version
+mv VERSION version
 git fetch --depth 1 origin 0e2aadb
 git checkout 0e2aadb
 patch -p 1 < ../../src/main/patch/mac.patch
