@@ -4,7 +4,6 @@
  * Programmed by Naohide Sano
  */
 
-
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.WindowAdapter;
